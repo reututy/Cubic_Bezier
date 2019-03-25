@@ -1,0 +1,14 @@
+# Directories
+.vs/
+bin/
+bin-int/
+display/
+engine3D/
+Debug/
+Game/Debug/
+Release/
+Game/Release/
+
+# Files
+*.user
+EngineVideoGames.opensdf
