@@ -1,5 +1,6 @@
 #define GLEW_STATIC
 #include <GL\glew.h>
+#include <iostream>
 #include "MeshConstructor.h"
 #include "VertexBuffer.hpp"
 #include "IndexBuffer.hpp"
@@ -10,15 +11,28 @@
 MeshConstructor::MeshConstructor(const int type)
 {
 	Bezier2D *surface;
+	Bezier1D line;
+	char* el_nombre = (type == 4) ? "Bezier1D" : "Axis";
+	std::cout << "Current mesh being contructed is: " << el_nombre << std::endl;
 	switch (type)
 	{
-	case Axis:	
-		InitLine(AxisGenerator());
-		break;
-	case Cube:
-		 InitMesh(CubeTriangles());
-	default:
-		break;
+		case Axis:	
+			InitLine(AxisGenerator());
+			break;
+		case Cube:
+			 InitMesh(CubeTriangles());
+			 break;
+		case BezierLine:
+
+			InitLine(line.GetLine(30));
+			break;
+		case BezierSurface:
+			//Bezier1D line();
+			//Bezier2D surface(line,glm::vec3(0,0,1),4);
+			//*indicesNum = initMesh( surface.GetSurface(30,30),vao);
+			break;
+		default:
+			break;
 	}
 	
 }
@@ -30,15 +44,15 @@ MeshConstructor::MeshConstructor(const std::string& fileName)
 
 MeshConstructor::MeshConstructor(Bezier1D *curve,bool isSurface,unsigned int resT,unsigned int resS)
 {
-	//if(isSurface)
-	//{
-	//	Bezier2D surface(*curve,glm::vec3(0,0,1),4);
-	//	*indicesNum = InitMesh(surface.GetSurface(resT,resS),vao,ib);		
-	//}
-	//else
-	//{
-	//	*indicesNum = InitLine( curve->GetLine(resT),vao);
-	//}
+	if(isSurface)
+	{
+//		Bezier2D surface(*curve,glm::vec3(0,0,1),4);
+//		*indicesNum = InitMesh(surface.GetSurface(resT,resS),vao,ib);		
+	}
+	else
+	{
+		InitLine(curve->GetLine(resT));
+	}
 }
 
 MeshConstructor::MeshConstructor(const MeshConstructor &mesh)
@@ -65,7 +79,7 @@ void MeshConstructor::InitLine(IndexedModel &model){
 	
 	int verticesNum = model.positions.size();
 	indicesNum = model.indices.size();
-	
+	std::cout << "number of indices: " << indicesNum << std::endl;
 	vao.Bind();
 
 	for (int i = 0; i < 2; i++)

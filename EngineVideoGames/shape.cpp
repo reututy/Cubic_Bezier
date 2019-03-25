@@ -6,14 +6,14 @@
 
 Shape::Shape(const Shape& shape,unsigned int mode)
 {
-	
 	mesh = new MeshConstructor(*shape.mesh);
 	//tex = shape.tex;
 	isCopy = true;
 	this->mode = mode;
 }
 
-Shape::Shape(const std::string& fileName, unsigned int mode){
+Shape::Shape(const std::string& fileName, unsigned int mode)
+{
 	mesh = new MeshConstructor(fileName);
 	isCopy = false;
 	this->mode = mode;
@@ -34,12 +34,10 @@ Shape::Shape(Bezier1D *curve, unsigned int xResolution,unsigned int yResolution,
 	isCopy = false;
 }
 
-
 void Shape::AddTexture(const std::string& textureFileName)
 {
 	tex = new Texture(textureFileName);
 }
-
 
 void Shape::Draw( const Shader& shader)
 {

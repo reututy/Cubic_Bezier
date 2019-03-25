@@ -12,49 +12,55 @@ static void printMat(const glm::mat4 mat)
 	}
 }
 
-
-Game::Game():Scene(){curve = 0;}
+Game::Game():Scene()
+{
+	curve = 0;
+}
 
 Game::Game(glm::vec3 position,float angle,float hwRelation,float near, float far) : Scene(position,angle,hwRelation,near,far)
 { 
 	curve = new Bezier1D();
 }
+
 void Game::addShape(int type,int parent,unsigned int mode)
 {
-		chainParents.push_back(parent);
-		if(type!=BezierLine && type!=BezierSurface)
-			shapes.push_back(new Shape(type,mode));
+	chainParents.push_back(parent);
+	if(type!=BezierLine && type!=BezierSurface)
+		shapes.push_back(new Shape(type,mode));
+	else
+	{
+		if(type == BezierLine)
+			shapes.push_back(new Shape(curve,30,30,false,mode));
 		else
-		{
-			if(type == BezierLine)
-				shapes.push_back(new Shape(curve,30,30,false,mode));
-			else
-				shapes.push_back(new Shape(curve,30,30,true,mode));
-		}
+			shapes.push_back(new Shape(curve,30,30,true,mode));
+	}
 }
 
 void Game::Init()
 {
 	addShape(Axis,-1,LINES);
-	addShape(Cube,-1,TRIANGLES);
-	addShapeCopy(1,-1,TRIANGLES);
-	addShapeFromFile("../res/objs/testBoxNoUV.obj",-1,TRIANGLES);
+	//addShape(Cube,-1,TRIANGLES);
+	//addShapeCopy(1,-1,TRIANGLES);
+	//addShapeFromFile("../res/objs/testBoxNoUV.obj",-1,TRIANGLES);
+	addShape(BezierLine, -1, LINES);
 	
 	//translate all scene away from camera
 	myTranslate(glm::vec3(0,0,-20),0);
 
+	//Axis scale:
 	pickedShape = 0;
-
 	shapeTransformation(yScale,10);
 	shapeTransformation(xScale,10);
 	shapeTransformation(zScale,10);
 
-	
 	pickedShape = 1;
-	shapeTransformation(yGlobalTranslate,5);
+	//shapeTransformation(xGlobalTranslate, 5);
 	
-	pickedShape = 2;
-	shapeTransformation(yGlobalRotate,45);	
+	//pickedShape = 1;
+	//shapeTransformation(yGlobalTranslate,5);
+	
+	//pickedShape = 2;
+	//shapeTransformation(yGlobalRotate,45);	
 
 }
 

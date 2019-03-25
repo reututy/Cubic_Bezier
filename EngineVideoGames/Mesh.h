@@ -14,7 +14,18 @@ public:
     std::vector<unsigned int> indices;
     
     void CalcNormals();
-	inline void* GetData(int indx) const {switch(indx){case 0: return (void*)&positions[0]; case 1: return (void*)&colors[0]; case 2: return (void*)&normals[0]; case 3: return (void*)&texCoords[0]; case 4: return (void*)&indices[0]; default: return (void*)0;}}
+	inline void* GetData(int indx) const 
+	{
+		switch(indx)
+		{
+			case 0: return (void*)&positions[0];
+			case 1: return (void*)&colors[0];
+			case 2: return (void*)&normals[0];
+			case 3: return (void*)&texCoords[0];
+			case 4: return (void*)&indices[0];
+			default: return (void*)0;
+		}
+	}
 
 };
 
