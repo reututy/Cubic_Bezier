@@ -42,7 +42,7 @@ void Game::Init()
 	//addShape(Cube,-1,TRIANGLES);
 	//addShapeCopy(1,-1,TRIANGLES);
 	//addShapeFromFile("../res/objs/testBoxNoUV.obj",-1,TRIANGLES);
-	addShape(BezierLine, -1, LINES);
+	addShape(BezierLine, -1, LINE_STRIP);
 	
 	//translate all scene away from camera
 	myTranslate(glm::vec3(0,0,-20),0);
@@ -54,7 +54,7 @@ void Game::Init()
 	shapeTransformation(zScale,10);
 
 	pickedShape = 1;
-	//shapeTransformation(xGlobalTranslate, 5);
+	//shapeTransformation(zGlobalTranslate, 5);
 	
 	//pickedShape = 1;
 	//shapeTransformation(yGlobalTranslate,5);

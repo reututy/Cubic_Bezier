@@ -8,12 +8,11 @@
 
 Bezier1D::Bezier1D(void)
 {
-	
 	AddSegment(glm::mat4(glm::vec4(0.0, 0.0, 0.0, 0.0), glm::vec4(1.0, 0.0, 0.0, 0.0),
-		glm::vec4(2.0, 0.0, 0.0, 0.0), glm::vec4(3.0, 0.0, 0.0, 0.0)));
+		glm::vec4(1.0, 1.0, 0.0, 0.0), glm::vec4(0.0, 1.0, 0.0, 0.0)));
 
-	//AddSegment(glm::mat4(glm::vec4(3.0, 0.0, 0.0, 0.0), glm::vec4(4.0, 0.0, 0.0, 0.0),
-		//glm::vec4(5.0, 0.0, 0.0, 0.0), glm::vec4(6.0, 0.0, 0.0, 0.0)));
+	//AddSegment(glm::mat4(glm::vec4(0.0, 1.0, 0.0, 0.0), glm::vec4(-1.0, 1.0, 0.0, 0.0),
+		//glm::vec4(-1.0, 0.0, 0.0, 0.0), glm::vec4(-1.0, 1.0, 0.0, 0.0)));
 
 	//AddSegment(glm::mat4(glm::vec4(6.0, 0.0, 0.0, 0.0), glm::vec4(7.0, 0.0, 0.0, 0.0),
 		//glm::vec4(8.0, 0.0, 0.0, 0.0), glm::vec4(9.0, 0.0, 0.0, 0.0)));
@@ -36,24 +35,24 @@ IndexedModel Bezier1D::GetLine(int resT)
 	{
 		t = 0.0;
 		
-		for (int i = 0; i < resT; i++)
+		for (int i = 1; i < resT+1; i++)
 		{
-			vec_t = glm::vec4(t*t*t, t*t, t, 1); //TODO: Check if the vector is column or row
-			vec_res = glm::vec3(vec_t*CUBIC_BEZIER_MAT*segments.at(j));
+			vec_res = *(GetVertex(j,t).GetPos());
 			index_model.positions.push_back(vec_res);	//TODO: verify order of insertion
 			index_model.colors.push_back(BLUEL);
 			index_model.indices.push_back(j*resT + i);
-			t += (float)1 / resT;
+			t += (float) 1 / resT;
 		}
 	}
 
 	return index_model;
 }
 
-LineVertex Bezier1D::GetVertex(int segment, int t)
+LineVertex Bezier1D::GetVertex(int segment, float t)
 {
 	std::cout << "GET VERTEX" << std::endl;
 	glm::vec4 vec_t = glm::vec4(t*t*t, t*t, t, 1);
+	//glm::vec4 vec_t = glm::vec4(1, t, t*t, t*t*t);
 	glm::vec3 pos_vec = glm::vec3(vec_t*CUBIC_BEZIER_MAT*segments.at(segment));
 	return LineVertex(pos_vec, BLUEL);
 }
@@ -65,7 +64,7 @@ LineVertex Bezier1D::GetControlPoint(int segment, int indx)
 	return LineVertex(control_point, BLUEL);
 }
 
-glm::vec3 Bezier1D::GetVelosity(int segment, int t)
+glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 {
 	std::cout << "GET VELOCITY" << std::endl;
 	glm::vec3 pos_vec = *GetVertex(segment, t).GetPos();

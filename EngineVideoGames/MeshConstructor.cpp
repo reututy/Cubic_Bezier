@@ -20,10 +20,9 @@ MeshConstructor::MeshConstructor(const int type)
 			InitLine(AxisGenerator());
 			break;
 		case Cube:
-			 InitMesh(CubeTriangles());
-			 break;
+			InitMesh(CubeTriangles());
+			break;
 		case BezierLine:
-
 			InitLine(line.GetLine(30));
 			break;
 		case BezierSurface:
@@ -51,7 +50,7 @@ MeshConstructor::MeshConstructor(Bezier1D *curve,bool isSurface,unsigned int res
 	}
 	else
 	{
-		InitLine(curve->GetLine(resT));
+		InitLine(curve->GetLine(resT)); //*Indecisnum=...
 	}
 }
 
