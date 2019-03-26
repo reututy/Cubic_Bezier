@@ -1,6 +1,8 @@
 #include "game.h"
 #include <iostream>
 
+#define CONTROL_POINT_SCALE 0.1
+
 static void printMat(const glm::mat4 mat)
 {
 	std::cout<<" matrix:"<<std::endl;
@@ -39,11 +41,8 @@ void Game::addShape(int type,int parent,unsigned int mode)
 void Game::Init()
 {
 	addShape(Axis,-1,LINES);
-	//addShape(Cube,-1,TRIANGLES);
-	//addShapeCopy(1,-1,TRIANGLES);
-	//addShapeFromFile("../res/objs/testBoxNoUV.obj",-1,TRIANGLES);
 	addShape(BezierLine, -1, LINE_STRIP);
-	
+
 	//translate all scene away from camera
 	myTranslate(glm::vec3(0,0,-20),0);
 
@@ -53,15 +52,33 @@ void Game::Init()
 	shapeTransformation(xScale,10);
 	shapeTransformation(zScale,10);
 
-	//pickedShape = 1;
+	pickedShape = 1;
 	//shapeTransformation(zGlobalTranslate, 5);
-	
-	//pickedShape = 1;
-	//shapeTransformation(yGlobalTranslate,5);
-	
-	//pickedShape = 2;
-	//shapeTransformation(yGlobalRotate,45);	
 
+	addShape(Cube, -1, TRIANGLES);
+	pickedShape = 2;
+	shapeTransformation(xScale, 0.1);
+	shapeTransformation(yScale, 0.1);
+	shapeTransformation(zScale, 0.1);
+
+	int j = 0;
+	glm::vec3 control_point;
+	for (int i = 2; i < 6; i++)
+	{
+		addShapeCopy(2, -1, TRIANGLES);
+		pickedShape = i+1;
+		control_point = *(curve->GetControlPoint(0, j++)).GetPos();
+		shapeTransformation(xScale, CONTROL_POINT_SCALE);
+		shapeTransformation(yScale, CONTROL_POINT_SCALE);
+		shapeTransformation(zScale, CONTROL_POINT_SCALE);
+		shapeTransformation(xGlobalTranslate, control_point.x/ CONTROL_POINT_SCALE);
+		shapeTransformation(yGlobalTranslate, control_point.y/ CONTROL_POINT_SCALE);
+		shapeTransformation(zGlobalTranslate, control_point.z/ CONTROL_POINT_SCALE);
+		std::cout << "control_point.x: " << control_point.x << std::endl;
+		std::cout << "control_point.y: " << control_point.y << std::endl;
+		std::cout << "control_point.z: " << control_point.z << std::endl;
+	}
+	pickedShape = -1;
 }
 
 void Game::Update(glm::mat4 MVP,glm::mat4 Normal,Shader *s)

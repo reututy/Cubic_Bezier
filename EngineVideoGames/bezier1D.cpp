@@ -15,11 +15,12 @@ void print_mat(glm::mat4 mat_to_print) {
 
 Bezier1D::Bezier1D(void)
 {
-	AddSegment(glm::mat4(glm::vec4(0.0, 0.0, 0.0, 1.0), glm::vec4(0.0, 5.0, 0.0, 1.0),
-		glm::vec4(5.0, 5.0, 0.0, 1.0), glm::vec4(5.0, 0.0, 0.0, 1.0)));
+	glm::mat4 mat = glm::mat4(glm::vec4(0.0, 0.0, 0.0, 1.0), glm::vec4(0.0, 5.0, 0.0, 1.0),
+		glm::vec4(5.0, 5.0, 0.0, 1.0), glm::vec4(5.0, 0.0, 0.0, 1.0));
+	AddSegment(glm::transpose(mat));
 
-	//AddSegment(glm::mat4(glm::vec4(0.0, 5.0, 0.0, 1.0), glm::vec4(10.0, 5.0, 0.0, 1.0),
-		//glm::vec4(10.0, 10.0, 0.0, 1.0), glm::vec4(10.0, 0.0, 0.0, 1.0)));
+	//AddSegment(glm::mat4(glm::vec4(5.0, 0.0, 0.0, 1.0), glm::vec4(5.0, -5.0, 0.0, 1.0),
+		//glm::vec4(10.0, -5.0, 0.0, 1.0), glm::vec4(10.0, 0.0, 0.0, 1.0)));
 
 	//AddSegment(glm::mat4(glm::vec4(6.0, 0.0, 0.0, 0.0), glm::vec4(7.0, 0.0, 0.0, 0.0),
 		//glm::vec4(8.0, 0.0, 0.0, 0.0), glm::vec4(9.0, 0.0, 0.0, 0.0)));
@@ -37,21 +38,18 @@ IndexedModel Bezier1D::GetLine(int resT)
 	float t = 0.0;
 	glm::vec4 vec_t;
 	glm::vec3 vec_res;
-	//std::cout << "resT currently is: " << resT << std::endl;
-	//(CUBIC_BEZIER_MAT);
 	
-	print_mat(CUBIC_BEZIER_MAT);
 	for (int j = 0; j < segments.size(); j++)
 	{
 		t = 0.0;
 		
-		for (int i = 0; i < resT + 1; i++)
+		for (int i = 0; i < resT; i++)
 		{
 			vec_res = *(GetVertex(j,t).GetPos());
 			index_model.positions.push_back(vec_res);	//TODO: verify order of insertion
 			index_model.colors.push_back(BLUEL);
 			index_model.indices.push_back(j*resT + i);
-			t += (float) 1 / resT;
+			t += (float) 1 / (resT-1);
 		}
 	}
 
@@ -62,16 +60,18 @@ LineVertex Bezier1D::GetVertex(int segment, float t)
 {
 	//std::cout << "GET VERTEX" << std::endl;
 	glm::vec4 vec_t = glm::vec4(t*t*t, t*t, t, 1);
-	//glm::vec4 vec_t = glm::vec4(1, t, t*t, t*t*t);
 	glm::vec3 pos_vec = glm::vec3(vec_t*CUBIC_BEZIER_MAT*segments.at(segment));
-	std::cout << "Printed vector is: " << pos_vec.x << "  " << pos_vec.y << "  " << pos_vec.z << std::endl;
+	//std::cout << "Printed vector is: " << pos_vec.x << "  " << pos_vec.y << "  " << pos_vec.z << std::endl;
 	return LineVertex(pos_vec, BLUEL);
 }
 
 LineVertex Bezier1D::GetControlPoint(int segment, int indx)
 {
 	std::cout << "GET CONTROL POINT" << std::endl;
-	glm::vec3 control_point = glm::vec3(segments.at(segment)[indx]);
+	glm::vec3 control_point = glm::vec3(glm::transpose(segments.at(segment))[indx]);
+	std::cout << "control_point.x: " << control_point.x << std::endl;
+	std::cout << "control_point.y: " << control_point.y << std::endl;
+	std::cout << "control_point.z: " << control_point.z << std::endl;
 	return LineVertex(control_point, BLUEL);
 }
 
@@ -91,5 +91,5 @@ void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec
 void Bezier1D::AddSegment(glm::mat4 mat)
 {
 	//std::cout << "ADD SEGMENT" << std::endl;
-	segments.push_back(glm::transpose(mat));
+	segments.push_back(mat);
 }
