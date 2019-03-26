@@ -1,6 +1,8 @@
 #include "bezier1D.h"
 #include <iostream>
 
+
+
 #define CUBIC_BEZIER_MAT glm::mat4(glm::vec4(-1.0f, 3.0f,-3.0f,1.0f), glm::vec4(3.0f, -6.0f,3.0f,0.0f), glm::vec4(-3.0f, 3.0f,0.0f,0.0f), glm::vec4(1.0f, 0.0f,0.0f,0.0f))
 #define BLUE glm::vec3(0.2667f, 0.3137f, 0.6196f)
 #define BLUEL glm::vec3(0.0f, 0.0f, 1.0f)
@@ -86,6 +88,14 @@ glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec4 newPosition)
 {
 
+	if (!preserveC1)
+	{ 
+		segments.at(segment)[indx] = newPosition;
+	}
+	else 
+	{
+
+	}
 }
 
 void Bezier1D::AddSegment(glm::mat4 mat)

@@ -1,7 +1,11 @@
 #include "game.h"
 #include <iostream>
 
+
 #define CONTROL_POINT_SCALE 0.1
+
+int MAX_CTRL = 3;
+int MIN_CTRL = 3;
 
 static void printMat(const glm::mat4 mat)
 {
@@ -81,6 +85,7 @@ void Game::Init()
 			std::cout << "control_point.z: " << control_point.z << std::endl;
 		}
 	}
+	MAX_CTRL = counter;
 	pickedShape = -1;
 }
 
@@ -107,8 +112,12 @@ void Game::WhenTranslate()
 {
 	if(pickedShape>=0)
 	{
-		glm::vec4 pos = GetShapeTransformation()*glm::vec4(0,0,0,1);
-		std::cout<<"( "<<pos.x<<", "<<pos.y<<", "<<pos.z<<")"<<std::endl;
+		if (pickedShape >= MIN_CTRL && pickedShape <= MAX_CTRL) 
+		{
+			curve->MoveControlPoint((pickedShape - MIN_CTRL)/4, (pickedShape - MIN_CTRL)%4, false, GetShapeTransformation()*glm::vec4(0, 0, 0, 1));
+		}
+		//glm::vec4 pos = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
+		//std::cout<<"( "<<pos.x<<", "<<pos.y<<", "<<pos.z<<")"<<std::endl;
 	}
 }
 
