@@ -40,17 +40,17 @@ void Game::addShape(int type,int parent,unsigned int mode)
 
 void Game::Init()
 {
-	addShape(Axis,-1,LINES);
+	addShape(Axis, -1, LINES);
 	addShape(BezierLine, -1, LINE_STRIP);
 
 	//translate all scene away from camera
-	myTranslate(glm::vec3(0,0,-20),0);
+	myTranslate(glm::vec3(0, 0, -20), 0);
 
 	//Axis scale:
 	pickedShape = 0;
-	shapeTransformation(yScale,10);
-	shapeTransformation(xScale,10);
-	shapeTransformation(zScale,10);
+	shapeTransformation(yScale, 10);
+	shapeTransformation(xScale, 10);
+	shapeTransformation(zScale, 10);
 
 	pickedShape = 1;
 	//shapeTransformation(zGlobalTranslate, 5);
@@ -61,22 +61,25 @@ void Game::Init()
 	shapeTransformation(yScale, 0.1);
 	shapeTransformation(zScale, 0.1);
 
-	int j = 0;
+	int counter = 3;
 	glm::vec3 control_point;
-	for (int i = 2; i < 6; i++)
+	for (int k = 0; k < curve->GetNumSegs(); k++) 
 	{
-		addShapeCopy(2, -1, TRIANGLES);
-		pickedShape = i+1;
-		control_point = *(curve->GetControlPoint(0, j++)).GetPos();
-		shapeTransformation(xScale, CONTROL_POINT_SCALE);
-		shapeTransformation(yScale, CONTROL_POINT_SCALE);
-		shapeTransformation(zScale, CONTROL_POINT_SCALE);
-		shapeTransformation(xGlobalTranslate, control_point.x/ CONTROL_POINT_SCALE);
-		shapeTransformation(yGlobalTranslate, control_point.y/ CONTROL_POINT_SCALE);
-		shapeTransformation(zGlobalTranslate, control_point.z/ CONTROL_POINT_SCALE);
-		std::cout << "control_point.x: " << control_point.x << std::endl;
-		std::cout << "control_point.y: " << control_point.y << std::endl;
-		std::cout << "control_point.z: " << control_point.z << std::endl;
+		for (int i = 0; i < 4; i++)
+		{
+			addShapeCopy(2, -1, TRIANGLES);
+			pickedShape = counter++;
+			control_point = *(curve->GetControlPoint(k, i)).GetPos();
+			shapeTransformation(xScale, CONTROL_POINT_SCALE);
+			shapeTransformation(yScale, CONTROL_POINT_SCALE);
+			shapeTransformation(zScale, CONTROL_POINT_SCALE);
+			shapeTransformation(xGlobalTranslate, control_point.x / CONTROL_POINT_SCALE);
+			shapeTransformation(yGlobalTranslate, control_point.y / CONTROL_POINT_SCALE);
+			shapeTransformation(zGlobalTranslate, control_point.z / CONTROL_POINT_SCALE);
+			std::cout << "control_point.x: " << control_point.x << std::endl;
+			std::cout << "control_point.y: " << control_point.y << std::endl;
+			std::cout << "control_point.z: " << control_point.z << std::endl;
+		}
 	}
 	pickedShape = -1;
 }
