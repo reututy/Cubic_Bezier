@@ -53,7 +53,7 @@ void Game::Init()
 	shapeTransformation(xScale,10);
 	shapeTransformation(zScale,10);
 
-	pickedShape = 1;
+	//pickedShape = 1;
 	//shapeTransformation(zGlobalTranslate, 5);
 	
 	//pickedShape = 1;

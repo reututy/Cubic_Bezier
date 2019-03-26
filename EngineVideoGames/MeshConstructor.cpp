@@ -11,7 +11,6 @@
 MeshConstructor::MeshConstructor(const int type)
 {
 	Bezier2D *surface;
-	Bezier1D line;
 	char* el_nombre = (type == 4) ? "Bezier1D" : "Axis";
 	std::cout << "Current mesh being contructed is: " << el_nombre << std::endl;
 	switch (type)
@@ -21,14 +20,6 @@ MeshConstructor::MeshConstructor(const int type)
 			break;
 		case Cube:
 			InitMesh(CubeTriangles());
-			break;
-		case BezierLine:
-			InitLine(line.GetLine(30));
-			break;
-		case BezierSurface:
-			//Bezier1D line();
-			//Bezier2D surface(line,glm::vec3(0,0,1),4);
-			//*indicesNum = initMesh( surface.GetSurface(30,30),vao);
 			break;
 		default:
 			break;
