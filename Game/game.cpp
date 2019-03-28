@@ -3,6 +3,7 @@
 
 
 #define CONTROL_POINT_SCALE 0.1
+#define PURGATORY -5000000
 
 int MAX_CTRL = 3;
 int MIN_CTRL = 3;
@@ -61,11 +62,9 @@ void Game::Init()
 
 	addShape(Cube, -1, TRIANGLES);
 	pickedShape = 2;
-	shapeTransformation(xScale, 0.1);
-	shapeTransformation(yScale, 0.1);
-	shapeTransformation(zScale, 0.1);
+	shapeTransformation(zGlobalTranslate, PURGATORY);
 
-	int counter = 3;
+	int counter = MIN_CTRL;
 	glm::vec3 control_point;
 	for (int k = 0; k < curve->GetNumSegs(); k++) 
 	{
@@ -74,15 +73,21 @@ void Game::Init()
 			addShapeCopy(2, -1, TRIANGLES);
 			pickedShape = counter++;
 			control_point = *(curve->GetControlPoint(k, i)).GetPos();
+			//scaling the cube
 			shapeTransformation(xScale, CONTROL_POINT_SCALE);
 			shapeTransformation(yScale, CONTROL_POINT_SCALE);
 			shapeTransformation(zScale, CONTROL_POINT_SCALE);
-			shapeTransformation(xGlobalTranslate, control_point.x / CONTROL_POINT_SCALE);
-			shapeTransformation(yGlobalTranslate, control_point.y / CONTROL_POINT_SCALE);
-			shapeTransformation(zGlobalTranslate, control_point.z / CONTROL_POINT_SCALE);
-			/*std::cout << "control_point.x: " << control_point.x << std::endl;
-			std::cout << "control_point.y: " << control_point.y << std::endl;
-			std::cout << "control_point.z: " << control_point.z << std::endl;*/
+			//move the cube to the control point
+			if (counter % 4 != MIN_CTRL || (i == 3 && k == curve->GetNumSegs()-1))
+			{
+				shapeTransformation(xGlobalTranslate, control_point.x / CONTROL_POINT_SCALE);
+				shapeTransformation(yGlobalTranslate, control_point.y / CONTROL_POINT_SCALE);
+				shapeTransformation(zGlobalTranslate, control_point.z / CONTROL_POINT_SCALE);
+			}
+			else
+			{
+				shapeTransformation(zGlobalTranslate, PURGATORY / CONTROL_POINT_SCALE);
+			}
 		}
 	}
 	MAX_CTRL = counter;
@@ -99,7 +104,6 @@ void Game::Update(glm::mat4 MVP,glm::mat4 Normal,Shader *s)
 	s->SetUniformMat4f("Normal", Normal);
 	s->SetUniform4f("lightDirection", 0.0f , 0.0f, -1.0f, 1.0f);
 	s->SetUniform4f("lightColor",r/255.0f, g/255.0f, b/255.0f,1.0f);
-		
 }
 
 void Game::WhenRotate()
@@ -110,15 +114,48 @@ void Game::WhenRotate()
 
 void Game::WhenTranslate()
 {
-	if(pickedShape>=0)
+	bool is_connect_segments = ((pickedShape) % 4 == 3 && pickedShape < MAX_CTRL) || (pickedShape == MAX_CTRL - 1);
+	if (pickedShape >= 0)
 	{
+		glm::vec4 trans_vec = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
+		//if the picked shape is one of the control points between the segments
 		if (pickedShape >= MIN_CTRL && pickedShape <= MAX_CTRL) 
 		{
-			curve->MoveControlPoint((pickedShape - MIN_CTRL)/4, (pickedShape - MIN_CTRL)%4, false, GetShapeTransformation()*glm::vec4(0, 0, 0, 1));
+			//move the relevent control point
+			curve->MoveControlPoint((pickedShape - MIN_CTRL)/4, (pickedShape - MIN_CTRL)%4, false, trans_vec);
+			if (is_connect_segments)
+			{
+				//move the pre control point
+				curve->MoveControlPoint((-1 + pickedShape - MIN_CTRL) / 4, (-1 + pickedShape - MIN_CTRL) % 4, false, trans_vec);
+			}
+		}
+		//if (is_connect_segments)
+		//{
+		//	if (pickedShape != MIN_CTRL) {
+		//		//move one before
+		//		curve->MoveControlPoint((-2 + pickedShape - MIN_CTRL) / 4, (-2 + pickedShape - MIN_CTRL) % 4, false, trans_vec);
+		//		/*if (pickedShape == MAX_CTRL - 1) {
+		//			curve->MoveControlPoint((-1 + pickedShape - MIN_CTRL) / 4, (-1 + pickedShape - MIN_CTRL) % 4, false, trans_vec);
+		//		}*/
+		//	}
+		//	if (pickedShape != MAX_CTRL - 1) {
+		//		//move one after
+		//		curve->MoveControlPoint((1 + pickedShape - MIN_CTRL) / 4, (1 + pickedShape - MIN_CTRL) % 4, false, trans_vec);
+		//	}
+		//}
+
+		//if the picked shape is the curve so all the control points moves with it
+		if (pickedShape == 1)
+		{
+			for (int i = MIN_CTRL; i < MAX_CTRL; i++) {
+				pickedShape = i;
+				shapeTransformation(xGlobalTranslate, trans_vec.x);
+				shapeTransformation(yGlobalTranslate, trans_vec.y);
+				shapeTransformation(zGlobalTranslate, trans_vec.z);
+			}
+			pickedShape = 1;
 		}
 		shapes[1]->GetMesh()->InitLine(curve->GetLine(30));
-		//glm::vec4 pos = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
-		//std::cout<<"( "<<pos.x<<", "<<pos.y<<", "<<pos.z<<")"<<std::endl;
 	}
 }
 

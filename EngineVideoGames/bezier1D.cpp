@@ -23,6 +23,9 @@ Bezier1D::Bezier1D(void)
 
 	AddSegment(glm::transpose(glm::mat4(glm::vec4(5.0, 0.0, 0.0, 1.0), glm::vec4(5.0, -5.0, 0.0, 1.0),
 		glm::vec4(10.0, -5.0, 0.0, 1.0), glm::vec4(10.0, 0.0, 0.0, 1.0))));
+
+	//AddSegment(glm::transpose(glm::mat4(glm::vec4(10.0, 0.0, 0.0, 1.0), glm::vec4(15.0, 10.0, 0.0, 1.0),
+		//glm::vec4(15.0, 15.0, 0.0, 1.0), glm::vec4(15.0, 0.0, 0.0, 1.0))));
 }
 
 Bezier1D::~Bezier1D(void)
@@ -104,4 +107,9 @@ void Bezier1D::AddSegment(glm::mat4 mat)
 int Bezier1D::GetNumSegs() 
 {
 	return segments.size();
+}
+
+glm::mat4 Bezier1D::GetSegmentsPosition(int segment)
+{
+	return segments.at(segment);
 }
