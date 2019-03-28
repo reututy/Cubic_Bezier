@@ -22,7 +22,6 @@ MeshConstructor::MeshConstructor(const int type)
 		default:
 			break;
 	}
-	
 }
 
 MeshConstructor::MeshConstructor(const std::string& fileName)

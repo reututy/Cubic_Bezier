@@ -15,7 +15,7 @@ class MeshConstructor
 	bool is2D;
 	int unsigned indicesNum;
 	
-	void InitLine(IndexedModel &model);
+	
 	void InitMesh(IndexedModel &model);
 	void CopyMesh(const MeshConstructor &mesh);
 	void CopyLine(const MeshConstructor &mesh);
@@ -39,6 +39,7 @@ public:
 	void Bind() {vao.Bind();}
 	void Unbind() {vao.Unbind();}
 	inline unsigned int GetIndicesNum(){return indicesNum;}
+	void InitLine(IndexedModel &model);
 	~MeshConstructor(void);
 
 };

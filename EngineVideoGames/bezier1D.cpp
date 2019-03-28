@@ -75,15 +75,15 @@ glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 
 void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec4 newPosition)
 {
-	std::cout << "before" << std::endl << std::endl;
-	print_mat(segments.at(segment));
+	//std::cout << "before" << std::endl << std::endl;
+	//print_mat(segments.at(segment));
 
 	segments.at(segment) = glm::transpose(segments.at(segment));
 	segments.at(segment)[indx] = newPosition;
 	segments.at(segment) = glm::transpose(segments.at(segment));
 
-	std::cout << "after" << std::endl;
-	print_mat(segments.at(segment));
+	//std::cout << "after" << std::endl;
+	//print_mat(segments.at(segment));
 
 	/*if (!preserveC1)
 	{ 

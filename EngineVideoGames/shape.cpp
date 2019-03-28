@@ -39,7 +39,7 @@ void Shape::AddTexture(const std::string& textureFileName)
 	tex = new Texture(textureFileName);
 }
 
-void Shape::Draw( const Shader& shader)
+void Shape::Draw(const Shader& shader)
 {
 //	if(tex)
 //		tex->Bind();
@@ -51,6 +51,11 @@ void Shape::Draw( const Shader& shader)
 	else*/
 	GLCall(glDrawElements(mode,mesh->GetIndicesNum(), GL_UNSIGNED_INT, 0));
 	mesh->Unbind();
+}
+
+MeshConstructor* Shape::GetMesh()
+{
+	return mesh;
 }
 
 Shape::~Shape(void)

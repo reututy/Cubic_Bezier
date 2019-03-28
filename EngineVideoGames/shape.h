@@ -30,6 +30,8 @@ public:
 
 	void Draw( const Shader& shader);
 
+	MeshConstructor* GetMesh();
+
 	virtual ~Shape(void);
 };
 

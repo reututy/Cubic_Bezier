@@ -116,6 +116,7 @@ void Game::WhenTranslate()
 		{
 			curve->MoveControlPoint((pickedShape - MIN_CTRL)/4, (pickedShape - MIN_CTRL)%4, false, GetShapeTransformation()*glm::vec4(0, 0, 0, 1));
 		}
+		shapes[1]->GetMesh()->InitLine(curve->GetLine(30));
 		//glm::vec4 pos = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
 		//std::cout<<"( "<<pos.x<<", "<<pos.y<<", "<<pos.z<<")"<<std::endl;
 	}
