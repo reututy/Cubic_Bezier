@@ -11,8 +11,6 @@
 MeshConstructor::MeshConstructor(const int type)
 {
 	Bezier2D *surface;
-	char* el_nombre = (type == 4) ? "Bezier1D" : "Axis";
-	std::cout << "Current mesh being contructed is: " << el_nombre << std::endl;
 	switch (type)
 	{
 		case Axis:	
@@ -41,7 +39,7 @@ MeshConstructor::MeshConstructor(Bezier1D *curve,bool isSurface,unsigned int res
 	}
 	else
 	{
-		InitLine(curve->GetLine(resT)); //*Indecisnum=...
+		InitLine(curve->GetLine(resT)); 
 	}
 }
 

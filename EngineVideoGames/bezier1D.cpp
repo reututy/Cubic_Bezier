@@ -23,9 +23,6 @@ Bezier1D::Bezier1D(void)
 
 	AddSegment(glm::transpose(glm::mat4(glm::vec4(5.0, 0.0, 0.0, 1.0), glm::vec4(5.0, -5.0, 0.0, 1.0),
 		glm::vec4(10.0, -5.0, 0.0, 1.0), glm::vec4(10.0, 0.0, 0.0, 1.0))));
-
-	//AddSegment(glm::mat4(glm::vec4(6.0, 0.0, 0.0, 0.0), glm::vec4(7.0, 0.0, 0.0, 0.0),
-		//glm::vec4(8.0, 0.0, 0.0, 0.0), glm::vec4(9.0, 0.0, 0.0, 0.0)));
 }
 
 Bezier1D::~Bezier1D(void)
@@ -35,7 +32,6 @@ Bezier1D::~Bezier1D(void)
 
 IndexedModel Bezier1D::GetLine(int resT)
 {
-	std::cout << "GET LINE IN BEZIER 1D" << std::endl;
 	IndexedModel index_model;
 	float t = 0.0;
 	glm::vec4 vec_t;
@@ -54,32 +50,24 @@ IndexedModel Bezier1D::GetLine(int resT)
 			t += (float) 1 / (resT-1);
 		}
 	}
-
 	return index_model;
 }
 
 LineVertex Bezier1D::GetVertex(int segment, float t)
 {
-	//std::cout << "GET VERTEX" << std::endl;
 	glm::vec4 vec_t = glm::vec4(t*t*t, t*t, t, 1);
 	glm::vec3 pos_vec = glm::vec3(vec_t*CUBIC_BEZIER_MAT*segments.at(segment));
-	//std::cout << "Printed vector is: " << pos_vec.x << "  " << pos_vec.y << "  " << pos_vec.z << std::endl;
 	return LineVertex(pos_vec, BLUEL);
 }
 
 LineVertex Bezier1D::GetControlPoint(int segment, int indx)
 {
-	std::cout << "GET CONTROL POINT" << std::endl;
 	glm::vec3 control_point = glm::vec3(glm::transpose(segments.at(segment))[indx]);
-	std::cout << "control_point.x: " << control_point.x << std::endl;
-	std::cout << "control_point.y: " << control_point.y << std::endl;
-	std::cout << "control_point.z: " << control_point.z << std::endl;
 	return LineVertex(control_point, BLUEL);
 }
 
 glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 {
-	std::cout << "GET VELOCITY" << std::endl;
 	glm::vec3 pos_vec = *GetVertex(segment, t).GetPos();
 	glm::vec4 vec_t = glm::vec4(0, t*t, t, 1);
 	return glm::vec3(vec_t*CUBIC_BEZIER_DER_MAT*segments.at(segment));
@@ -87,20 +75,29 @@ glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 
 void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec4 newPosition)
 {
+	std::cout << "before" << std::endl << std::endl;
+	print_mat(segments.at(segment));
 
-	if (!preserveC1)
+	segments.at(segment) = glm::transpose(segments.at(segment));
+	segments.at(segment)[indx] = newPosition;
+	segments.at(segment) = glm::transpose(segments.at(segment));
+
+	std::cout << "after" << std::endl;
+	print_mat(segments.at(segment));
+
+	/*if (!preserveC1)
 	{ 
 		segments.at(segment)[indx] = newPosition;
+
 	}
 	else 
 	{
 
-	}
+	}*/
 }
 
 void Bezier1D::AddSegment(glm::mat4 mat)
 {
-	//std::cout << "ADD SEGMENT" << std::endl;
 	segments.push_back(mat);
 }
 

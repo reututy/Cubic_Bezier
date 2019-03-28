@@ -80,9 +80,9 @@ void Game::Init()
 			shapeTransformation(xGlobalTranslate, control_point.x / CONTROL_POINT_SCALE);
 			shapeTransformation(yGlobalTranslate, control_point.y / CONTROL_POINT_SCALE);
 			shapeTransformation(zGlobalTranslate, control_point.z / CONTROL_POINT_SCALE);
-			std::cout << "control_point.x: " << control_point.x << std::endl;
+			/*std::cout << "control_point.x: " << control_point.x << std::endl;
 			std::cout << "control_point.y: " << control_point.y << std::endl;
-			std::cout << "control_point.z: " << control_point.z << std::endl;
+			std::cout << "control_point.z: " << control_point.z << std::endl;*/
 		}
 	}
 	MAX_CTRL = counter;
