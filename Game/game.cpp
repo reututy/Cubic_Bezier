@@ -119,16 +119,14 @@ void Game::WhenTranslate()
 	{
 		glm::vec4 trans_vec = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
 		//if the picked shape is one of the control points between the segments
-		if (pickedShape >= MIN_CTRL && pickedShape <= MAX_CTRL) 
+		//move the relevent control point
+		curve->MoveControlPoint((pickedShape - MIN_CTRL), (pickedShape - MIN_CTRL), is_connect_segments, trans_vec);
+		if (is_connect_segments)
 		{
-			//move the relevent control point
-			curve->MoveControlPoint((pickedShape - MIN_CTRL)/4, (pickedShape - MIN_CTRL)%4, false, trans_vec);
-			if (is_connect_segments)
-			{
-				//move the pre control point
-				curve->MoveControlPoint((-1 + pickedShape - MIN_CTRL) / 4, (-1 + pickedShape - MIN_CTRL) % 4, false, trans_vec);
-			}
+			//move the pre control point
+			//curve->MoveControlPoint((-1 + pickedShape - MIN_CTRL) / 4, (-1 + pickedShape - MIN_CTRL) % 4, is_connect_segments, trans_vec);
 		}
+
 		//if (is_connect_segments)
 		//{
 		//	if (pickedShape != MIN_CTRL) {
@@ -145,7 +143,7 @@ void Game::WhenTranslate()
 		//}
 
 		//if the picked shape is the curve so all the control points moves with it
-		if (pickedShape == 1)
+	/*	if (pickedShape == 1)
 		{
 			for (int i = MIN_CTRL; i < MAX_CTRL; i++) {
 				pickedShape = i;
@@ -153,8 +151,7 @@ void Game::WhenTranslate()
 				shapeTransformation(yGlobalTranslate, trans_vec.y);
 				shapeTransformation(zGlobalTranslate, trans_vec.z);
 			}
-			pickedShape = 1;
-		}
+		}*/
 		shapes[1]->GetMesh()->InitLine(curve->GetLine(30));
 	}
 }

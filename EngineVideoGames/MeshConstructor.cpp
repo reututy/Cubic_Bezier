@@ -66,7 +66,6 @@ void MeshConstructor::InitLine(IndexedModel &model){
 	
 	int verticesNum = model.positions.size();
 	indicesNum = model.indices.size();
-	std::cout << "number of indices: " << indicesNum << std::endl;
 	vao.Bind();
 
 	for (int i = 0; i < 2; i++)

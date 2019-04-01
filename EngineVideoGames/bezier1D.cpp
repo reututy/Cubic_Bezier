@@ -1,7 +1,8 @@
 #include "bezier1D.h"
 #include <iostream>
 
-
+extern int MIN_CTRL;
+extern int MAX_CTRL;
 
 #define CUBIC_BEZIER_MAT glm::mat4(glm::vec4(-1.0f, 3.0f,-3.0f,1.0f), glm::vec4(3.0f, -6.0f,3.0f,0.0f), glm::vec4(-3.0f, 3.0f,0.0f,0.0f), glm::vec4(1.0f, 0.0f,0.0f,0.0f))
 #define BLUE glm::vec3(0.2667f, 0.3137f, 0.6196f)
@@ -24,8 +25,8 @@ Bezier1D::Bezier1D(void)
 	AddSegment(glm::transpose(glm::mat4(glm::vec4(5.0, 0.0, 0.0, 1.0), glm::vec4(5.0, -5.0, 0.0, 1.0),
 		glm::vec4(10.0, -5.0, 0.0, 1.0), glm::vec4(10.0, 0.0, 0.0, 1.0))));
 
-	//AddSegment(glm::transpose(glm::mat4(glm::vec4(10.0, 0.0, 0.0, 1.0), glm::vec4(15.0, 10.0, 0.0, 1.0),
-		//glm::vec4(15.0, 15.0, 0.0, 1.0), glm::vec4(15.0, 0.0, 0.0, 1.0))));
+	AddSegment(glm::transpose(glm::mat4(glm::vec4(10.0, 0.0, 0.0, 1.0), glm::vec4(15.0, 10.0, 0.0, 1.0),
+		glm::vec4(15.0, 15.0, 0.0, 1.0), glm::vec4(15.0, 0.0, 0.0, 1.0))));
 }
 
 Bezier1D::~Bezier1D(void)
@@ -73,30 +74,44 @@ glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 {
 	glm::vec3 pos_vec = *GetVertex(segment, t).GetPos();
 	glm::vec4 vec_t = glm::vec4(0, t*t, t, 1);
-	return glm::vec3(vec_t*CUBIC_BEZIER_DER_MAT*segments.at(segment));
+	glm::vec4 result = vec_t*CUBIC_BEZIER_DER_MAT*segments.at(segment);
+	return glm::vec3(result.y, result.z, result.w);
 }
 
 void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec4 newPosition)
 {
-	//std::cout << "before" << std::endl << std::endl;
-	//print_mat(segments.at(segment));
+	int seg_num = segment / 4;
+	int indx_num = indx % 4;
+	glm::vec4 oldPosition = segments.at(seg_num )[indx_num];
+	UpdatePosition(seg_num, indx_num, newPosition);
+	//std::cout << "indx is: " << indx << std::endl;
+	bool start_seg = ((seg_num ) == 0 && (indx_num) == 0);
+	bool end_seg = (seg_num == segments.size() - 1 && indx_num == 3);
 
-	segments.at(segment) = glm::transpose(segments.at(segment));
-	segments.at(segment)[indx] = newPosition;
-	segments.at(segment) = glm::transpose(segments.at(segment));
-
-	//std::cout << "after" << std::endl;
-	//print_mat(segments.at(segment));
-
-	/*if (!preserveC1)
-	{ 
-		segments.at(segment)[indx] = newPosition;
-
+	if (preserveC1)
+	{
+		if (!start_seg) {
+			UpdatePosition((segment - 1) / 4, (indx - 1) % 4, newPosition);
+		} 
+		if (!end_seg) {
+			segments.at((segment - 1)/4)[(indx - 1) % 4] = newPosition;
+		}
+		
+		/*if (!((segment == 0 && indx == 0) && (segment == segments.size() - 1  && indx == 3))) {
+			glm::vec4 direction = newPosition - oldPosition;
+			if (indx == 0) 
+			{
+				segments.at(segment - 1)[3] = segments.at(segment - 1)[3] + direction;
+				segments.at(segment)[indx + 1] = segments.at(segment)[indx + 1] + direction;
+			}
+		}*/
 	}
 	else 
 	{
+		glm::vec3 der_at_edge = GetVelosity(segment, 1);
+		std::cout << "The derivative is: " << der_at_edge.x << "  " << der_at_edge.y << "  " << der_at_edge.z << std::endl;
 
-	}*/
+	}
 }
 
 void Bezier1D::AddSegment(glm::mat4 mat)
@@ -112,4 +127,11 @@ int Bezier1D::GetNumSegs()
 glm::mat4 Bezier1D::GetSegmentsPosition(int segment)
 {
 	return segments.at(segment);
+}
+
+void Bezier1D::UpdatePosition(int segment, int indx, glm::vec4 newPosition)
+{
+	segments.at(segment) = glm::transpose(segments.at(segment));
+	segments.at(segment)[indx] = newPosition;
+	segments.at(segment) = glm::transpose(segments.at(segment));
 }
