@@ -101,6 +101,7 @@ void Game::Init()
 
 void Game::Update(glm::mat4 MVP,glm::mat4 Normal,Shader *s)
 {
+	MoveControlCubes();
 	int r = ((pickedShape+1) & 0x000000FF) >>  0;
 	int g = ((pickedShape+1) & 0x0000FF00) >>  8;
 	int b = ((pickedShape+1) & 0x00FF0000) >> 16;
@@ -119,7 +120,7 @@ void Game::WhenRotate()
 
 void Game::WhenTranslate()
 {
-	bool no_preservation = (pickedShape == 4 || pickedShape < MAX_CTRL -2);
+	bool no_preservation = !(pickedShape <= 4 || pickedShape >= MAX_CTRL - 2);
 	if (pickedShape >= 3) //Make sure that it only happens in the case of the cubes
 	{
 		glm::vec4 trans_vec = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
@@ -127,25 +128,29 @@ void Game::WhenTranslate()
 		//move the relevent control point
 		curve->MoveControlPoint((pickedShape - MIN_CTRL), (pickedShape - MIN_CTRL), no_preservation, trans_vec);
 		//move the relevent cube incident to that specific control point
-		//MoveControlCubes();
-		//Draw the curve again
 		shapes[1]->GetMesh()->InitLine(curve->GetLine(30));
+		//Draw the curve again
+		
 	}
 }
 
 void Game::MoveControlCubes()
 {
+	int old_picked_shape = pickedShape;
 	glm::vec3 control_point;
+	
 	for (int i = MIN_CTRL; i < MAX_CTRL; i++)
 	{
 		if (!((i - 2) % 4) == 0 && i != MAX_CTRL - 1)
 		{
 			pickedShape = i;
+			glm::vec4 curr_pos = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
 			control_point = *(curve->GetControlPoint((i - MIN_CTRL) / 4, (i - MIN_CTRL) % 4)).GetPos();
+			control_point = (control_point) - glm::vec3(curr_pos);
 			shapeTransformation(xGlobalTranslate, control_point.x);
 			shapeTransformation(yGlobalTranslate, control_point.y);
 			shapeTransformation(zGlobalTranslate, control_point.z);
 		}
 	}
-	pickedShape = -1;
+	pickedShape = old_picked_shape;
 }
