@@ -24,6 +24,11 @@ Game::Game():Scene()
 	curve = 0;
 }
 
+Game::~Game(void)
+{
+	delete curve;
+}
+
 Game::Game(glm::vec3 position,float angle,float hwRelation,float near, float far) : Scene(position,angle,hwRelation,near,far)
 { 
 	curve = new Bezier1D();
@@ -114,49 +119,33 @@ void Game::WhenRotate()
 
 void Game::WhenTranslate()
 {
-	bool is_connect_segments = ((pickedShape) % 4 == 3 && pickedShape < MAX_CTRL) || (pickedShape == MAX_CTRL - 1);
-	if (pickedShape >= 0)
+	bool no_preservation = (pickedShape == 4 || pickedShape < MAX_CTRL -2);
+	if (pickedShape >= 3) //Make sure that it only happens in the case of the cubes
 	{
 		glm::vec4 trans_vec = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
 		//if the picked shape is one of the control points between the segments
 		//move the relevent control point
-		curve->MoveControlPoint((pickedShape - MIN_CTRL), (pickedShape - MIN_CTRL), is_connect_segments, trans_vec);
-		if (is_connect_segments)
-		{
-			//move the pre control point
-			//curve->MoveControlPoint((-1 + pickedShape - MIN_CTRL) / 4, (-1 + pickedShape - MIN_CTRL) % 4, is_connect_segments, trans_vec);
-		}
-
-		//if (is_connect_segments)
-		//{
-		//	if (pickedShape != MIN_CTRL) {
-		//		//move one before
-		//		curve->MoveControlPoint((-2 + pickedShape - MIN_CTRL) / 4, (-2 + pickedShape - MIN_CTRL) % 4, false, trans_vec);
-		//		/*if (pickedShape == MAX_CTRL - 1) {
-		//			curve->MoveControlPoint((-1 + pickedShape - MIN_CTRL) / 4, (-1 + pickedShape - MIN_CTRL) % 4, false, trans_vec);
-		//		}*/
-		//	}
-		//	if (pickedShape != MAX_CTRL - 1) {
-		//		//move one after
-		//		curve->MoveControlPoint((1 + pickedShape - MIN_CTRL) / 4, (1 + pickedShape - MIN_CTRL) % 4, false, trans_vec);
-		//	}
-		//}
-
-		//if the picked shape is the curve so all the control points moves with it
-	/*	if (pickedShape == 1)
-		{
-			for (int i = MIN_CTRL; i < MAX_CTRL; i++) {
-				pickedShape = i;
-				shapeTransformation(xGlobalTranslate, trans_vec.x);
-				shapeTransformation(yGlobalTranslate, trans_vec.y);
-				shapeTransformation(zGlobalTranslate, trans_vec.z);
-			}
-		}*/
+		curve->MoveControlPoint((pickedShape - MIN_CTRL), (pickedShape - MIN_CTRL), no_preservation, trans_vec);
+		//move the relevent cube incident to that specific control point
+		//MoveControlCubes();
+		//Draw the curve again
 		shapes[1]->GetMesh()->InitLine(curve->GetLine(30));
 	}
 }
 
-Game::~Game(void)
+void Game::MoveControlCubes()
 {
-	delete curve;
+	glm::vec3 control_point;
+	for (int i = MIN_CTRL; i < MAX_CTRL; i++)
+	{
+		if (!((i - 2) % 4) == 0 && i != MAX_CTRL - 1)
+		{
+			pickedShape = i;
+			control_point = *(curve->GetControlPoint((i - MIN_CTRL) / 4, (i - MIN_CTRL) % 4)).GetPos();
+			shapeTransformation(xGlobalTranslate, control_point.x);
+			shapeTransformation(yGlobalTranslate, control_point.y);
+			shapeTransformation(zGlobalTranslate, control_point.z);
+		}
+	}
+	pickedShape = -1;
 }

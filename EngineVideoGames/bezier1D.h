@@ -16,7 +16,5 @@ public:
 	void AddSegment(glm::mat4 mat);
 	int GetNumSegs();
 	glm::mat4 GetSegmentsPosition(int segment);
-	void UpdatePosition(int segment, int indx, glm::vec4 newPosition);
-
 };
 
