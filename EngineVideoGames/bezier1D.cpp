@@ -35,19 +35,19 @@ IndexedModel Bezier1D::GetLine(int resT)
 {
 	IndexedModel index_model;
 	float t = 0.0;
-	glm::vec4 vec_t;
-	glm::vec3 vec_res;
+	float t_inc = (float)1 / (resT - 1);
+	glm::vec3 vec_pos;
 	
 	for (int j = 0; j < segments.size(); j++)
 	{
 		t = 0.0;
 		for (int i = 0; i < resT; i++)
 		{
-			vec_res = *(GetVertex(j,t).GetPos());
-			index_model.positions.push_back(vec_res);	//TODO: verify order of insertion
+			vec_pos = *(GetVertex(j,t).GetPos());
+			index_model.positions.push_back(vec_pos);	//TODO: verify order of insertion
 			index_model.colors.push_back(BLUEL);
 			index_model.indices.push_back(j*resT + i);
-			t += (float) 1 / (resT-1);
+			t += t_inc;
 		}
 	}
 	return index_model;
