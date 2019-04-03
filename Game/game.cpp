@@ -1,7 +1,6 @@
 #include "game.h"
 #include <iostream>
 
-
 #define CONTROL_POINT_SCALE 0.1
 #define PURGATORY -5000000
 

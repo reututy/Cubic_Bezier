@@ -33,8 +33,8 @@ MeshConstructor::MeshConstructor(Bezier1D *curve,bool isSurface,unsigned int res
 {
 	if(isSurface)
 	{
-//		Bezier2D surface(*curve,glm::vec3(0,0,1),4);
-//		*indicesNum = InitMesh(surface.GetSurface(resT,resS),vao,ib);		
+		Bezier2D surface(*curve,curve->GetAxis(),4);
+		InitMesh(surface.GetSurface(resT,resS));		
 	}
 	else
 	{

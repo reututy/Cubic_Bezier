@@ -7,6 +7,7 @@ class Bezier1D
 	std::vector<glm::mat4> segments;
 public:
 	Bezier1D(void);
+	Bezier1D(std::vector<glm::mat4> ctrlPointsVec);
 	~Bezier1D(void);
 	IndexedModel GetLine(int resT);						//generates model for rendering using MeshConstructor::initLin
 	LineVertex GetVertex(int segment, float t);			//returns point on curve in the requested segment for value of t
@@ -16,5 +17,6 @@ public:
 	void AddSegment(glm::mat4 mat);
 	int GetNumSegs();
 	glm::mat4 GetSegmentsPosition(int segment);
+	glm::vec3 GetAxis();
 };
 

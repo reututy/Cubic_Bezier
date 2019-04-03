@@ -31,8 +31,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		{
 			case GLFW_KEY_ESCAPE:			
 				glfwSetWindowShouldClose(window,GLFW_TRUE);
-			break;
-				
+				break;
+			case GLFW_KEY_SPACE:
+				scn->addShape(5, -1, 1);
+				break;
 		default:
 			break;
 		}

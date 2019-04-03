@@ -26,6 +26,12 @@ Bezier1D::Bezier1D(void)
 		glm::vec4(15.0, 5.0, 0.0, 1.0), glm::vec4(15.0, 0.0, 0.0, 1.0)));
 }
 
+Bezier1D::Bezier1D(std::vector<glm::mat4> ctrlPointsVec) {
+	for (glm::mat4 seg : ctrlPointsVec) {
+		AddSegment(seg);
+	}
+}
+
 Bezier1D::~Bezier1D(void)
 {
 	std::cout << "THE DESTRUCTOR WAS SUMMONED" << std::endl;
@@ -35,7 +41,7 @@ IndexedModel Bezier1D::GetLine(int resT)
 {
 	IndexedModel index_model;
 	float t = 0.0;
-	float t_inc = (float)1 / (resT - 1);
+	float t_inc = (float) 1 / (resT - 1);
 	glm::vec3 vec_pos;
 	
 	for (int j = 0; j < segments.size(); j++)
@@ -127,4 +133,11 @@ int Bezier1D::GetNumSegs()
 glm::mat4 Bezier1D::GetSegmentsPosition(int segment)
 {
 	return segments.at(segment);
+}
+
+glm::vec3 Bezier1D::GetAxis() 
+{
+	glm::vec4 first_point = segments[0][0];
+	glm::vec4 last_point = segments[segments.size() - 1][3];
+	return glm::vec3((last_point - first_point).x, (last_point - first_point).y, (last_point - first_point).z);
 }

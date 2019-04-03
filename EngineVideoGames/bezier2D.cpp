@@ -1,7 +1,9 @@
 #include "bezier2D.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
 #define BLUEL glm::vec3(0.0f, 0.0f, 1.0f)
-#define WINDOW 4
+#define CIRCLE_CONST 0.55228475
 
 Bezier2D::Bezier2D(void)
 {
@@ -11,7 +13,8 @@ Bezier2D::Bezier2D(void)
 Bezier2D::Bezier2D(Bezier1D &b, glm::vec3 axis, int circularSubdivision)
 {
 	this->circularSubdivision = circularSubdivision;
-
+	this->main_curve = b;
+	this->axis = axis;
 }
 
 Bezier2D::~Bezier2D(void)
@@ -29,54 +32,45 @@ IndexedModel Bezier2D::GetSurface(int resT, int resS)
 	int k, h;
 	glm::vec3 vec_pos;
 
-	for (int i = 0; i < resT; i++)
+	for (int main_curve_runner = 0; main_curve_runner < main_curve.GetNumSegs(); main_curve_runner++)
 	{
-		for (int j = 0; j < resS; j++)
-		{
-			k = j + WINDOW;
-			h = k - 1;
-
-		}
-	}
-
-	for (int i = 0; i < main_curve.GetNumSegs(); i++)
-	{
-		for (int k = 0; k < second_curve.GetNumSegs(); k++)
+		for (int resT_Runner = 0; resT_Runner < resT; resT_Runner++)
 		{
 			t = 0.0;
-			for (int j = 0; j < resT; j++)
+			for (int resS_Runner = 0; resS_Runner < resS*circularSubdivision; resS_Runner++)
 			{
-				s = 0.0;
-				for (int h = 0; h < resS; h++)
+				if (resS_Runner % resS == 0)
 				{
-					vec_pos = *GetVertex(i, k, j, h).GetPos();
-					index_model.positions.push_back(vec_pos);
-					index_model.colors.push_back(BLUEL);
-					index_model.normals.push_back(GetNormal(i, k, j, h));
-					index_model.indices.push_back(j*resT + i);
-					s += s_inc;
-				}//end of resS loop
+					s = 0.0;
+				}
+				
+				//vec_pos = *GetVertex(i, k, j, h).GetPos();
+				index_model.positions.push_back(vec_pos);
+				index_model.colors.push_back(BLUEL);
+				//index_model.normals.push_back(GetNormal(i, k, j, h));
+				//index_model.indices.push_back(j*resT + i);
+				s += s_inc;
 				t += t_inc;
-			}//end of resT loop
-		}//end of second_curve loop
+			}//end of resS loop
+		}//end of resT loop
 	}//end of main_curve loop
 	return IndexedModel();
 }
 
 Vertex Bezier2D::GetVertex(int segmentT, int segmentS, float t, float s)
 {
-	glm::vec3 pos_vec_t = *(main_curve.GetVertex(segmentT,t)).GetPos();
-	glm::vec3 pos_vec_s = *(second_curve.GetVertex(segmentT, t)).GetPos();
-	glm::vec3 result = pos_vec_t * pos_vec_s;
+	glm::vec4 pos_vec_t = glm::vec4(*(main_curve.GetVertex(segmentT,t)).GetPos(),1);
+	pos_vec_t = pos_vec_t*glm::rotate(360*s, axis);
+	//glm::vec3 pos_vec_s = *(second_curve.GetVertex(segmentT, t)).GetPos();
+	//glm::vec3 result = pos_vec_t * pos_vec_s;
 	glm::vec3 normal = GetNormal(segmentT, segmentS, t, s);
-	return Vertex(result, glm::vec2(0.0f, 0.0f), normal, BLUEL);
+	return Vertex(glm::vec3(pos_vec_t), glm::vec2(0.0f, 0.0f), normal, BLUEL);
 }
 
 glm::vec3 Bezier2D::GetNormal(int segmentT, int segmentS, float t, float s)
 {
-	glm::vec3 velT = main_curve.GetVelosity(segmentT, t);
-	glm::vec3 velS = second_curve.GetVelosity(segmentS, s);
-	//glm::vec3 vel1 = velT*(*(second_curve.GetVertex(segmentT, t)).GetPos());
-	//glm::vec3 vel2 = velS*(*(second_curve.GetVertex(segmentS, s)).GetPos());
-	return glm::cross(velT, velS);
+	glm::vec4 velT = glm::vec4(main_curve.GetVelosity(segmentT, t), 1);
+	//glm::vec4 pos_vec_t = glm::vec4(*(main_curve.GetVertex(segmentT, t)).GetPos(), 1);
+	velT = velT*glm::rotate(360 * s, axis);
+	return glm::vec3(velT);
 }
