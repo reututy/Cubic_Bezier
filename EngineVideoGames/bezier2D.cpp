@@ -1,6 +1,7 @@
 #include "bezier2D.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <iostream>
 
 #define BLUEL glm::vec3(0.0f, 0.0f, 1.0f)
 #define CIRCLE_CONST 0.55228475
@@ -25,36 +26,69 @@ Bezier2D::~Bezier2D(void)
 IndexedModel Bezier2D::GetSurface(int resT, int resS)
 {
 	IndexedModel index_model;
+	int segS = 0, segT = 0;
 	float t = 0.0;
 	float s = 0.0;
 	float t_inc = (float)1 / (resT - 1);
 	float s_inc = (float)1 / (resS - 1);
-	int k, h;
-	glm::vec3 vec_pos;
+	glm::vec3 vec_pos_top_left;
+	glm::vec3 vec_pos_top_right;
+	glm::vec3 vec_pos_bottom_right;
+	glm::vec3 vec_pos_bottom_left;
 
-	for (int main_curve_runner = 0; main_curve_runner < main_curve.GetNumSegs(); main_curve_runner++)
+	for (int main_curve_runner = 0; main_curve_runner < main_curve.GetNumSegs()*resT - 1 ; main_curve_runner++)
 	{
-		for (int resT_Runner = 0; resT_Runner < resT; resT_Runner++)
+
+		if (main_curve_runner != 0 && main_curve_runner % resT == 0)
+		{
+			segT++;
+		}
+		if (main_curve_runner % (resT - 1) == 0)
 		{
 			t = 0.0;
-			for (int resS_Runner = 0; resS_Runner < resS*circularSubdivision; resS_Runner++)
+		}
+		//std::cout << "SegT is: " << segT << "  Iteration No: " << main_curve_runner << std::endl;
+		for (int second_curve_runner = 0; second_curve_runner < resS*circularSubdivision - 1; second_curve_runner++)
+		{
+			if (main_curve_runner != 0 && main_curve_runner % resS == 0)
 			{
-				if (resS_Runner % resS == 0)
-				{
-					s = 0.0;
-				}
-				
-				//vec_pos = *GetVertex(i, k, j, h).GetPos();
-				index_model.positions.push_back(vec_pos);
-				index_model.colors.push_back(BLUEL);
-				//index_model.normals.push_back(GetNormal(i, k, j, h));
-				//index_model.indices.push_back(j*resT + i);
-				s += s_inc;
-				t += t_inc;
-			}//end of resS loop
-		}//end of resT loop
-	}//end of main_curve loop
-	return IndexedModel();
+				segS++;
+			}
+			if (second_curve_runner % (resS - 1) == 0)
+			{
+				s = 0.0;
+			}
+
+			vec_pos_top_left = *GetVertex(segT, segS, t, s).GetPos();
+			vec_pos_top_right = *GetVertex(segT, segS, t + t_inc, s).GetPos();
+			vec_pos_bottom_left = *GetVertex(segT, segS, t, s + s_inc).GetPos();
+			vec_pos_bottom_right = *GetVertex(segT, segS, t + t_inc, s + s_inc).GetPos();
+			index_model.positions.push_back(vec_pos_top_left);
+			index_model.positions.push_back(vec_pos_top_right);
+			index_model.positions.push_back(vec_pos_bottom_left);
+			index_model.positions.push_back(vec_pos_bottom_right);
+			index_model.colors.push_back(BLUEL);
+			index_model.colors.push_back(BLUEL);
+			index_model.colors.push_back(BLUEL);
+			index_model.colors.push_back(BLUEL);
+			index_model.normals.push_back(GetNormal(segT, segS, t, s));
+			index_model.normals.push_back(GetNormal(segT, segS, t + t_inc, s));
+			index_model.normals.push_back(GetNormal(segT, segS, t, s + s_inc));
+			index_model.normals.push_back(GetNormal(segT, segS, t + t_inc, s + s_inc));
+			//std::cout << "index num is:  " << main_curve_runner*resT + second_curve_runner * 4 << std::endl;
+			index_model.indices.push_back((main_curve_runner*resT + second_curve_runner) * 16);
+			index_model.indices.push_back((main_curve_runner*resT + second_curve_runner) * 16 + 1);
+			index_model.indices.push_back((main_curve_runner*resT + second_curve_runner) * 16 + 2);
+			index_model.indices.push_back((main_curve_runner*resT + second_curve_runner) * 16 + 3);
+			index_model.texCoords.push_back(glm::vec2(0, 0));
+			index_model.texCoords.push_back(glm::vec2(0, 0));
+			index_model.texCoords.push_back(glm::vec2(0, 0));
+			index_model.texCoords.push_back(glm::vec2(0, 0));
+			s += s_inc;
+		}
+		t += t_inc;
+	}
+	return index_model;
 }
 
 Vertex Bezier2D::GetVertex(int segmentT, int segmentS, float t, float s)

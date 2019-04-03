@@ -2,6 +2,7 @@
 #include "display.h"
 #include "game.h"
 
+bool bezier_surface_flag = 0;
 
 void mouse_callback(GLFWwindow* window,int button, int action, int mods)
 {	
@@ -29,12 +30,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		switch (key)
 		{
-			case GLFW_KEY_ESCAPE:			
-				glfwSetWindowShouldClose(window,GLFW_TRUE);
-				break;
-			case GLFW_KEY_SPACE:
-				scn->addShape(5, -1, 1);
-				break;
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, GLFW_TRUE);
+			break;
+		case GLFW_KEY_SPACE:
+			if (bezier_surface_flag == 0) 
+			{
+				scn->addShape(5, -1, 5);
+				bezier_surface_flag++;
+			}
+			break;
 		default:
 			break;
 		}

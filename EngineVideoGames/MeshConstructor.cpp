@@ -81,26 +81,26 @@ void MeshConstructor::InitLine(IndexedModel &model){
 	
 }
 
-void MeshConstructor::InitMesh( IndexedModel &model){
+void MeshConstructor::InitMesh(IndexedModel &model){
 
 	int verticesNum = model.positions.size();
 	indicesNum = model.indices.size();
-	
+	//std::cout << "MESH model.positions.size() " << model.positions.size() << std::endl;
+	//std::cout << "MESH model.indices.size() " << model.indices.size() << std::endl;
 	vao.Bind();
-
 	for (int i = 0; i < 3; i++)
 	{
 		vbs.push_back(new VertexBuffer(model.GetData(i),verticesNum*sizeof(model.positions[0])));	
 		vao.AddBuffer(*vbs.back(),i,3,GL_FLOAT);
 	}
+
 	vbs.push_back(new VertexBuffer(model.GetData(3),verticesNum*sizeof(model.texCoords[0])));
 	vao.AddBuffer(*vbs.back(),vbs.size()-1,2,GL_FLOAT);
 	
 	ib = new IndexBuffer((unsigned int*)model.GetData(4),indicesNum);
-	
+	//std::cout << "(unsigned int*)model.GetData(4) " << (unsigned int*)model.GetData(4) << std::endl;
 	vao.Unbind();
 	is2D = true;
-	
 }
 
 void MeshConstructor::CopyLine(const MeshConstructor &mesh){
