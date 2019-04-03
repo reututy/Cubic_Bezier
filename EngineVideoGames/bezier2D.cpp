@@ -43,7 +43,7 @@ IndexedModel Bezier2D::GetSurface(int resT, int resS)
 		{
 			segT++;
 		}
-		if (main_curve_runner % (resT - 1) == 0)
+		if (main_curve_runner % (resT) == 0)
 		{
 			t = 0.0;
 		}
@@ -54,7 +54,7 @@ IndexedModel Bezier2D::GetSurface(int resT, int resS)
 			{
 				segS++;
 			}
-			if (second_curve_runner % (resS - 1) == 0)
+			if (second_curve_runner % (resS) == 0)
 			{
 				s = 0.0;
 			}
@@ -76,10 +76,10 @@ IndexedModel Bezier2D::GetSurface(int resT, int resS)
 			index_model.normals.push_back(GetNormal(segT, segS, t, s + s_inc));
 			index_model.normals.push_back(GetNormal(segT, segS, t + t_inc, s + s_inc));
 			//std::cout << "index num is:  " << main_curve_runner*resT + second_curve_runner * 4 << std::endl;
-			index_model.indices.push_back((main_curve_runner*resT + second_curve_runner) * 16);
-			index_model.indices.push_back((main_curve_runner*resT + second_curve_runner) * 16 + 1);
-			index_model.indices.push_back((main_curve_runner*resT + second_curve_runner) * 16 + 2);
-			index_model.indices.push_back((main_curve_runner*resT + second_curve_runner) * 16 + 3);
+			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1);
+			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1 + 1);
+			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1 + 2);
+			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1 + 3);
 			index_model.texCoords.push_back(glm::vec2(0, 0));
 			index_model.texCoords.push_back(glm::vec2(0, 0));
 			index_model.texCoords.push_back(glm::vec2(0, 0));
