@@ -75,6 +75,10 @@ void Scene::addShader(const std::string& fileName)
 		
 }
 
+void Scene::change_shape_mode(int index, unsigned int new_mode) {
+	shapes[index]->change_mode(new_mode);
+}
+
 mat4 Scene::GetViewProjection(int indx) const
 {
 	return cameras[indx]->GetViewProjection();

@@ -6,6 +6,10 @@
 
 int MAX_CTRL = 3;
 int MIN_CTRL = 3;
+bool once = false;
+
+extern bool bezier_surface_flag;
+
 
 static void printMat(const glm::mat4 mat)
 {
@@ -100,7 +104,17 @@ void Game::Init()
 
 void Game::Update(glm::mat4 MVP,glm::mat4 Normal,Shader *s)
 {
-	MoveControlCubes();
+	int prev_shape = pickedShape;
+	if (!once) { 
+		MoveControlCubes(); 
+	}
+	if (bezier_surface_flag && !once) {
+		for (int i = MIN_CTRL - 2; i < MAX_CTRL; i++) {
+			pickedShape = i;
+			shapeTransformation(zGlobalTranslate, PURGATORY);
+		}
+		once = true;
+	}
 	int r = ((pickedShape+1) & 0x000000FF) >>  0;
 	int g = ((pickedShape+1) & 0x0000FF00) >>  8;
 	int b = ((pickedShape+1) & 0x00FF0000) >> 16;
@@ -120,7 +134,7 @@ void Game::WhenRotate()
 void Game::WhenTranslate()
 {
 	bool no_preservation = !(pickedShape <= 4 || pickedShape >= MAX_CTRL - 2);
-	if (pickedShape >= 3) //Make sure that it only happens in the case of the cubes
+	if (pickedShape >= 3 && pickedShape < MAX_CTRL) //Make sure that it only happens in the case of the cubes
 	{
 		glm::vec4 trans_vec = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
 		//if the picked shape is one of the control points between the segments

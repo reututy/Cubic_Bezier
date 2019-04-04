@@ -1,9 +1,13 @@
 #pragma once   //maybe should be static class
 #include "display.h"
 #include "game.h"
+#include <iostream>
 
+#define NO_OF_MODES 6
+
+int curr_mode = 5;
 bool bezier_surface_flag = 0;
-
+char modes_names[6][20] =  { "POINTS", "LINES" , "LINE_LOOP", "LINE_STRIP", "TRIANGLES", "QUADS"};
 void mouse_callback(GLFWwindow* window,int button, int action, int mods)
 {	
 	if(action == GLFW_PRESS )
@@ -36,10 +40,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_SPACE:
 			if (bezier_surface_flag == 0) 
 			{
-				scn->addShape(5, -1, 5);
+				scn->addShape(5, -1, curr_mode);
 				bezier_surface_flag++;
 			}
 			break;
+		case GLFW_KEY_W: {
+			curr_mode = (curr_mode + 1) % NO_OF_MODES;
+			std::cout << "Current mode is: " << modes_names[curr_mode] << std::endl;
+			scn->change_shape_mode(15, curr_mode);
+		}
 		default:
 			break;
 		}

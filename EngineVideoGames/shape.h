@@ -30,6 +30,8 @@ public:
 
 	void Draw( const Shader& shader);
 
+	void change_mode(unsigned int new_mode);
+
 	MeshConstructor* GetMesh();
 
 	virtual ~Shape(void);

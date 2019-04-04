@@ -46,6 +46,7 @@ public:
 	void Draw(int shaderIndx,int cameraIndx,bool debugMode);
 	void shapeTransformation(int type,float amt);
 	void shapeRotation(glm::vec3 v, float ang,int indx);
+	void change_shape_mode(int index, unsigned int new_mode);
 	//void inline setPicked(int pickID){pickedShape = pickID;}
 	float picking(int x,int y);
 	void resize(int width,int hight);

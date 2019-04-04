@@ -34,6 +34,10 @@ Shape::Shape(Bezier1D *curve, unsigned int xResolution,unsigned int yResolution,
 	isCopy = false;
 }
 
+void Shape::change_mode(unsigned int new_mode) {
+	this->mode = new_mode;
+}
+
 void Shape::AddTexture(const std::string& textureFileName)
 {
 	tex = new Texture(textureFileName);
