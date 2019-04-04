@@ -99,21 +99,25 @@ void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec
 
 	if (preserveC1)
 	{
-		if (is_connector) {
+		if (is_connector) 
+		{
 			segments.at((segment) / 4)[1] = segments.at((segment) / 4)[1] + direction;
-			if (!start_ctrl) {
+			if (!start_ctrl) 
+			{
 				segments.at((segment - 1) / 4)[3] = newPosition;
 				segments.at((segment - 1) / 4)[2] = segments.at((segment - 1) / 4)[2] + direction;
-				//TODO Add an edge case for the first connector.
-				//TODO Add an edge case for the last connector.
 			}
 			//Move the adjacent control point according to the derivative.
 		}
-		else {
-			if (forward && (seg_num != GetNumSegs())) { //Not in the last segment so moving the next segment is valid.
+		else 
+		{
+			if (forward && (seg_num != GetNumSegs())) 
+			{ 
+				//Not in the last segment so moving the next segment is valid.
 				segments.at(seg_num + 1)[1] = segments.at(seg_num)[3] + segments.at(seg_num)[3] - segments.at(seg_num)[indx_num];
 			} 
-			if (backward && (seg_num != 0)) {
+			if (backward && (seg_num != 0)) 
+			{
 				segments.at(seg_num - 1)[2] = segments.at(seg_num)[0] + segments.at(seg_num)[0] - segments.at(seg_num)[indx_num];
 			}
 		}
@@ -140,4 +144,9 @@ glm::vec3 Bezier1D::GetAxis()
 	glm::vec4 first_point = segments[0][0];
 	glm::vec4 last_point = segments[segments.size() - 1][3];
 	return glm::vec3((last_point - first_point).x, (last_point - first_point).y, (last_point - first_point).z);
+}
+
+std::vector<glm::mat4> Bezier1D::GetSegments()
+{
+	return segments;
 }

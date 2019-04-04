@@ -128,7 +128,7 @@ void Game::Update(glm::mat4 MVP,glm::mat4 Normal,Shader *s)
 void Game::WhenRotate()
 {
 	if(pickedShape>=0)
-		printMat(GetShapeTransformation());
+		GetShapeTransformation();
 }
 
 void Game::WhenTranslate()
@@ -142,8 +142,6 @@ void Game::WhenTranslate()
 		curve->MoveControlPoint((pickedShape - MIN_CTRL), (pickedShape - MIN_CTRL), no_preservation, trans_vec);
 		//move the relevent cube incident to that specific control point
 		shapes[1]->GetMesh()->InitLine(curve->GetLine(30));
-		//Draw the curve again
-		
 	}
 }
 
