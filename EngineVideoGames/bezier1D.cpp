@@ -51,7 +51,7 @@ IndexedModel Bezier1D::GetLine(int resT)
 		{
 			vec_pos = *(GetVertex(j,t).GetPos());
 			index_model.positions.push_back(vec_pos);	//TODO: verify order of insertion
-			index_model.colors.push_back(BLUEL);
+			index_model.colors.push_back(BLUE);
 			index_model.indices.push_back(j*resT + i);
 			t += t_inc;
 		}
@@ -65,13 +65,13 @@ LineVertex Bezier1D::GetVertex(int segment, float t)
 						3*pow((1-t),2)*t*segments[segment][1] + 
 						3*(1-t)*t*t*segments[segment][2] + 
 						t*t*t*segments[segment][3];
-	return LineVertex(glm::vec3(pos_vec), BLUEL);
+	return LineVertex(glm::vec3(pos_vec), BLUE);
 }
 
 LineVertex Bezier1D::GetControlPoint(int segment, int indx)
 {
 	glm::vec3 control_point = glm::vec3(segments.at(segment)[indx]);
-	return LineVertex(control_point, BLUEL);
+	return LineVertex(control_point, BLUE);
 }
 
 glm::vec3 Bezier1D::GetVelosity(int segment, float t)

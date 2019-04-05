@@ -69,10 +69,10 @@ IndexedModel Bezier2D::GetSurface(int resT, int resS)
 			index_model.positions.push_back(vec_pos_top_right);
 			index_model.positions.push_back(vec_pos_bottom_left);
 			index_model.positions.push_back(vec_pos_bottom_right);
-			index_model.colors.push_back(BLUEL);
-			index_model.colors.push_back(BLUEL);
-			index_model.colors.push_back(BLUEL);
-			index_model.colors.push_back(BLUEL);
+			index_model.colors.push_back(BLUE);
+			index_model.colors.push_back(BLUE);
+			index_model.colors.push_back(BLUE);
+			index_model.colors.push_back(BLUE);
 			index_model.normals.push_back(GetNormal(segT, segS, t, s));
 			index_model.normals.push_back(GetNormal(segT, segS, t + t_inc, s));
 			index_model.normals.push_back(GetNormal(segT, segS, t, s + s_inc));
@@ -103,43 +103,12 @@ Vertex Bezier2D::GetVertex(int segmentT, int segmentS, float t, float s)
 
 glm::vec3 Bezier2D::GetNormal(int segmentT, int segmentS, float t, float s)
 {
-	glm::mat4 segment_coordT = this->main_curve.GetSegments()[segmentT];
-	glm::vec3 rotate_axis = glm::vec3(this->main_curve.GetSegments()[main_curve.GetNumSegs() - 1][3] - this->main_curve.GetSegments()[0][0]);
-	glm::mat4 rotateMat = glm::rotate(360.0f * s, rotate_axis);
+	glm::mat4 rotateMat = glm::rotate(360.0f * s, glm::vec3(main_curve.GetAxis()));
+	glm::vec3 velT = main_curve.GetVelosity(segmentT, t);
+	glm::vec3 velS = glm::vec3(rotateMat * glm::vec4(glm::vec3(0, 0, 1), 1));
 
-	glm::vec3 b_vec = main_curve.GetVelosity(segmentT, t);
-	glm::vec3 c_vec = glm::vec3(rotateMat*glm::vec4(glm::vec3(0, 0, 1), 1));
 	float sign = (segmentT % 2 == 0) ? 1.0f : -1.0f;
-	glm::vec3 normal = sign*glm::normalize(glm::cross(b_vec, c_vec));
-	normal.y = sign*normal.y;
-
+	glm::vec3 normal = sign * glm::normalize(glm::cross(velT, velS));
+	normal.y = sign * normal.y;
 	return normal;
-
-	/*
-	float line_parameter = (t + segmentT);
-	//std::cout << "line_parameter " << line_parameter << std::endl;
-	glm::vec4 velT = glm::vec4(main_curve.GetVelosity(segmentT, t), 1);
-	glm::vec4 posT = glm::vec4(*(main_curve.GetVertex(segmentT, t)).GetPos(), 1);
-	glm::vec4 center = glm::vec4(axis,1)*line_parameter;
-	glm::vec4 radius = center - posT;
-	glm::vec3 velS = glm::cross(glm::vec3(radius), glm::vec3(axis));
-
-	/*glm::vec3 center = axis*line_parameter;
-	float radius_m = (posT.y - center.y) / (posT.x - center.x);
-	float velS_m = - 1 / radius_m;
-	glm::vec4 velS = velS_m + posT;*/
-
-	//glm::vec4 velS = velT*glm::rotate(360 * s, axis);
-	//glm::vec3 normal = glm::cross(glm::vec3(velT), glm::vec3(velS));
-	/*glm::vec4 velS = glm::vec4(1);
-	glm::vec4 radius = glm::vec4(axis, 1) - posT;
-	if (t != 0) {
-		velS = velS*glm::rotate(90.0f*segmentS, axis*t);
-	}
-	
-	//glm::vec4 radius = glm::perp(posT,glm::vec4(axis,1))*glm::rotate(360 * s, axis);
-	//glm::vec3 velS = glm::cross(glm::vec3(radius), axis);
-	glm::vec3 normal = glm::cross(glm::vec3(velS), glm::vec3(velT));
-	normal = glm::vec3(glm::vec4(normal,1)*glm::rotate(360 * s, axis));
-	return glm::vec3(normal);*/
 }
