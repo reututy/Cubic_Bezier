@@ -10,7 +10,6 @@ bool once = false;
 
 extern bool bezier_surface_flag;
 
-
 static void printMat(const glm::mat4 mat)
 {
 	std::cout<<" matrix:"<<std::endl;
@@ -64,9 +63,6 @@ void Game::Init()
 	shapeTransformation(yScale, 10);
 	shapeTransformation(xScale, 10);
 	shapeTransformation(zScale, 10);
-
-	pickedShape = 1;
-	//shapeTransformation(zGlobalTranslate, 5);
 
 	addShape(Cube, -1, TRIANGLES);
 	pickedShape = 2;
@@ -137,7 +133,6 @@ void Game::WhenTranslate()
 	if (pickedShape >= 3 && pickedShape < MAX_CTRL) //Make sure that it only happens in the case of the cubes
 	{
 		glm::vec4 trans_vec = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
-		//if the picked shape is one of the control points between the segments
 		//move the relevent control point
 		curve->MoveControlPoint((pickedShape - MIN_CTRL), (pickedShape - MIN_CTRL), no_preservation, trans_vec);
 		//move the relevent cube incident to that specific control point

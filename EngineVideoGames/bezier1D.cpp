@@ -7,8 +7,10 @@ extern int MAX_CTRL;
 #define BLUE glm::vec3(0.2667f, 0.3137f, 0.6196f)
 #define BLUEL glm::vec3(0.0f, 0.0f, 1.0f)
 
-void print_mat(glm::mat4 mat_to_print) {
-	for (int i = 0; i < 4; i++) {
+void print_mat(glm::mat4 mat_to_print) 
+{
+	for (int i = 0; i < 4; i++) 
+	{
 		std::cout << mat_to_print[i].x << "   " << mat_to_print[i].y << "   "
 			<< mat_to_print[i].z << "   " << mat_to_print[i].w << std::endl;
 	}

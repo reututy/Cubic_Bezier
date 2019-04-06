@@ -77,7 +77,6 @@ IndexedModel Bezier2D::GetSurface(int resT, int resS)
 			index_model.normals.push_back(GetNormal(segT, segS, t + t_inc, s));
 			index_model.normals.push_back(GetNormal(segT, segS, t, s + s_inc));
 			index_model.normals.push_back(GetNormal(segT, segS, t + t_inc, s + s_inc));
-			//std::cout << "index num is:  " << main_curve_runner*resT + second_curve_runner * 4 << std::endl;
 			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1);
 			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1 + 1);
 			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1 + 2);
@@ -103,6 +102,43 @@ Vertex Bezier2D::GetVertex(int segmentT, int segmentS, float t, float s)
 
 glm::vec3 Bezier2D::GetNormal(int segmentT, int segmentS, float t, float s)
 {
+	/*
+	glm::vec3 posT = *(main_curve.GetVertex(segmentT,t)).GetPos();
+	glm::vec3 velT = main_curve.GetVelosity(segmentT, t);
+	
+	glm::vec3 radius = posT - axis;
+	float R = sqrt( pow(posT.x - axis.x, 2) + pow(posT.y - axis.y, 2) + pow(posT.z - axis.z, 2) );
+	
+	float Nx = (-posT.x) / sqrt(1 - pow(posT.x, 2) - pow(posT.y, 2));
+	float Ny = (-posT.y) / sqrt(1 - pow(posT.x, 2) - pow(posT.y, 2));
+	glm::vec3 normal = glm::vec3(Nx, Ny, -R);
+
+	//if (ravia == 0 || ravia == 3)
+		//normal = -normal;
+	
+	//float sign = (segmentT % 2 == 0) ? 1.0f : -1.0f;
+	//normal = sign * normal;
+	
+	return normal;
+	*/
+	
+
+	/*
+	glm::vec3 posT = *(main_curve.GetVertex(segmentT, t)).GetPos();
+	glm::vec3 ortogonal_pos = glm::dot(posT, main_curve.GetAxis()) * main_curve.GetAxis();
+	glm::vec3 R = posT - ortogonal_pos;
+	//R = R * glm::vec3(glm::rotate(90.0f, main_curve.GetAxis()));
+	glm::mat4 rotateMat = glm::rotate(360.0f * s, glm::vec3(main_curve.GetAxis()));
+
+	glm::vec3 velT = main_curve.GetVelosity(segmentT, t);
+	glm::vec3 velS = glm::vec3(rotateMat * glm::vec4(R, 1));
+	float sign = (segmentT % 2 == 0) ? 1.0f : -1.0f;
+	glm::vec3 normal = sign * glm::normalize(glm::cross(velT, velS));
+	normal.y = sign * normal.y;
+	return normal;
+	*/
+
+	
 	glm::mat4 rotateMat = glm::rotate(360.0f * s, glm::vec3(main_curve.GetAxis()));
 	glm::vec3 velT = main_curve.GetVelosity(segmentT, t);
 	glm::vec3 velS = glm::vec3(rotateMat * glm::vec4(glm::vec3(0, 0, 1), 1));
