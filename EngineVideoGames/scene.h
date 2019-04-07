@@ -97,7 +97,7 @@ protected:
 	std::vector<int> chainParents;
 	int pickedShape;
 	int direction;
-	static const int scaleFactor =3;
+	static const int scaleFactor = 3;
 	bool isActive;
 
 };

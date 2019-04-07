@@ -3,7 +3,6 @@
 #include "shape.h"
 #include "Log.hpp"
 
-
 Shape::Shape(const Shape& shape,unsigned int mode)
 {
 	mesh = new MeshConstructor(*shape.mesh);
