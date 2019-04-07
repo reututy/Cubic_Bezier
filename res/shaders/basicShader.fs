@@ -13,5 +13,5 @@ void main()
 {
     vec3 tmp = dot(-lightDirection.xyz, normal0) * color0 ;
 	//gl_FragColor = texture2D(sampler, texCoord0) *clamp(vec4(tmp,1.0), 0.0, 1.0);
-    gl_FragColor = clamp(vec4(tmp,1),0.0,1.0);
+    gl_FragColor = vec4(0.2667f, 0.3137f, 0.6196f, 0.0f) + clamp(vec4(tmp,1),0.0,1.0);
 }

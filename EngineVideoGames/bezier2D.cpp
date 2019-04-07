@@ -8,6 +8,7 @@
 #define BLUE glm::vec3(0.2667f, 0.3137f, 0.6196f)
 #define BLUEL glm::vec3(0.0f, 0.0f, 1.0f)
 #define CIRCLE_CONST 0.55228475
+#define epsilon 1e-10
 
 Bezier2D::Bezier2D(void)
 {
@@ -102,49 +103,21 @@ Vertex Bezier2D::GetVertex(int segmentT, int segmentS, float t, float s)
 
 glm::vec3 Bezier2D::GetNormal(int segmentT, int segmentS, float t, float s)
 {
-	/*
-	glm::vec3 posT = *(main_curve.GetVertex(segmentT,t)).GetPos();
 	glm::vec3 velT = main_curve.GetVelosity(segmentT, t);
-	
-	glm::vec3 radius = posT - axis;
-	float R = sqrt( pow(posT.x - axis.x, 2) + pow(posT.y - axis.y, 2) + pow(posT.z - axis.z, 2) );
-	
-	float Nx = (-posT.x) / sqrt(1 - pow(posT.x, 2) - pow(posT.y, 2));
-	float Ny = (-posT.y) / sqrt(1 - pow(posT.x, 2) - pow(posT.y, 2));
-	glm::vec3 normal = glm::vec3(Nx, Ny, -R);
-
-	//if (ravia == 0 || ravia == 3)
-		//normal = -normal;
-	
-	//float sign = (segmentT % 2 == 0) ? 1.0f : -1.0f;
-	//normal = sign * normal;
-	
-	return normal;
-	*/
-	
-
-	/*
 	glm::vec3 posT = *(main_curve.GetVertex(segmentT, t)).GetPos();
-	glm::vec3 ortogonal_pos = glm::dot(posT, main_curve.GetAxis()) * main_curve.GetAxis();
-	glm::vec3 R = posT - ortogonal_pos;
-	//R = R * glm::vec3(glm::rotate(90.0f, main_curve.GetAxis()));
-	glm::mat4 rotateMat = glm::rotate(360.0f * s, glm::vec3(main_curve.GetAxis()));
 
-	glm::vec3 velT = main_curve.GetVelosity(segmentT, t);
-	glm::vec3 velS = glm::vec3(rotateMat * glm::vec4(R, 1));
-	float sign = (segmentT % 2 == 0) ? 1.0f : -1.0f;
-	glm::vec3 normal = sign * glm::normalize(glm::cross(velT, velS));
-	normal.y = sign * normal.y;
-	return normal;
-	*/
+	glm::vec3 c0 = *(main_curve.GetControlPoint(0, 0)).GetPos();
+	glm::vec3 normalized_axis = glm::normalize(axis);
+	glm::mat4 rotateMat = glm::rotate(360.0f * s, axis);
+	glm::vec3 posS = glm::vec3(rotateMat * glm::vec4(posT, 1));
 
-	
-	glm::mat4 rotateMat = glm::rotate(360.0f * s, glm::vec3(main_curve.GetAxis()));
-	glm::vec3 velT = main_curve.GetVelosity(segmentT, t);
-	glm::vec3 velS = glm::vec3(rotateMat * glm::vec4(glm::vec3(0, 0, 1), 1));
+	glm::vec3 radius_vec = posS - c0;
+	glm::vec3 center = c0 + normalized_axis * (glm::dot(radius_vec, normalized_axis));
+	glm::vec3 velS = glm::cross(radius_vec, axis);
 
-	float sign = (segmentT % 2 == 0) ? 1.0f : -1.0f;
-	glm::vec3 normal = sign * glm::normalize(glm::cross(velT, velS));
-	normal.y = sign * normal.y;
+	if (glm::length(velS) < epsilon)
+		return -axis;
+
+	glm::vec3 normal = -glm::normalize(glm::cross(velT, velS));
 	return normal;
 }
