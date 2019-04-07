@@ -68,24 +68,25 @@ IndexedModel Bezier2D::GetSurface(int resT, int resS)
 			vec_pos_bottom_right = *GetVertex(segT, segS, t + t_inc, s + s_inc).GetPos();
 			index_model.positions.push_back(vec_pos_top_left);
 			index_model.positions.push_back(vec_pos_top_right);
-			index_model.positions.push_back(vec_pos_bottom_left);
 			index_model.positions.push_back(vec_pos_bottom_right);
+			index_model.positions.push_back(vec_pos_bottom_left);
 			index_model.colors.push_back(BLUE);
 			index_model.colors.push_back(BLUE);
 			index_model.colors.push_back(BLUE);
 			index_model.colors.push_back(BLUE);
 			index_model.normals.push_back(GetNormal(segT, segS, t, s));
 			index_model.normals.push_back(GetNormal(segT, segS, t + t_inc, s));
-			index_model.normals.push_back(GetNormal(segT, segS, t, s + s_inc));
 			index_model.normals.push_back(GetNormal(segT, segS, t + t_inc, s + s_inc));
-			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1);
-			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1 + 1);
-			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1 + 2);
-			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) * 1 + 3);
+			index_model.normals.push_back(GetNormal(segT, segS, t, s + s_inc));
+			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner));
+			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) + 1);
+			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) + 2);
+			index_model.indices.push_back((main_curve_runner*(resS*circularSubdivision - 1)*4 + second_curve_runner) + 3);
 			index_model.texCoords.push_back(glm::vec2(t, s));
 			index_model.texCoords.push_back(glm::vec2(t + t_inc, s));
-			index_model.texCoords.push_back(glm::vec2(t, s + s_inc));
 			index_model.texCoords.push_back(glm::vec2(t + t_inc, s + s_inc));
+			index_model.texCoords.push_back(glm::vec2(t, s + s_inc));
+			
 			s += s_inc;
 		}
 		t += t_inc;
@@ -116,7 +117,7 @@ glm::vec3 Bezier2D::GetNormal(int segmentT, int segmentS, float t, float s)
 	glm::vec3 velS = glm::cross(radius_vec, axis);
 
 	if (glm::length(velS) < epsilon)
-		return -axis;
+		return axis;
 
 	glm::vec3 normal = -glm::normalize(glm::cross(velT, velS));
 	return normal;

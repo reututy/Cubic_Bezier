@@ -5,7 +5,7 @@
 
 #define NO_OF_MODES 6
 
-int curr_mode = 5;
+int curr_mode = 7;
 bool bezier_surface_flag = 0;
 char modes_names[6][20] =  { "POINTS", "LINES" , "LINE_LOOP", "LINE_STRIP", "TRIANGLES", "QUADS"};
 void mouse_callback(GLFWwindow* window,int button, int action, int mods)
