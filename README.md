@@ -6,5 +6,5 @@ Based on the engine of my lecturer Tamir Grossinger: https://github.com/tamirgrB
 
 Implementation in openGL.
 
-A Cubic Bezier curve that can be controlled by it's control points.
+A Cubic Bezier curve that can be controlled by its control points.
 After pressing "SPACE", the curve becomes a 3D shape.
